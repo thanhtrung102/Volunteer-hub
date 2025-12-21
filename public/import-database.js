@@ -49,42 +49,39 @@
 
         // Create users store
         if (!db.objectStoreNames.contains('users')) {
-          const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+          const userStore = db.createObjectStore('users', { keyPath: 'id' });
           userStore.createIndex('email', 'email', { unique: true });
           console.log('✅ Created users store');
         }
 
         // Create events store
         if (!db.objectStoreNames.contains('events')) {
-          const eventStore = db.createObjectStore('events', { keyPath: 'id', autoIncrement: true });
+          const eventStore = db.createObjectStore('events', { keyPath: 'id' });
           eventStore.createIndex('status', 'status');
-          eventStore.createIndex('createdBy', 'createdBy');
+          eventStore.createIndex('date', 'date');
           console.log('✅ Created events store');
         }
 
         // Create registrations store
         if (!db.objectStoreNames.contains('registrations')) {
-          const regStore = db.createObjectStore('registrations', { keyPath: 'id', autoIncrement: true });
+          const regStore = db.createObjectStore('registrations', { keyPath: 'id' });
           regStore.createIndex('userId', 'userId');
           regStore.createIndex('eventId', 'eventId');
-          regStore.createIndex('status', 'status');
           console.log('✅ Created registrations store');
         }
 
-        // Create posts store
-        if (!db.objectStoreNames.contains('posts')) {
-          const postStore = db.createObjectStore('posts', { keyPath: 'id', autoIncrement: true });
-          postStore.createIndex('authorId', 'authorId');
-          postStore.createIndex('createdAt', 'createdAt');
-          console.log('✅ Created posts store');
+        // Create notifications store
+        if (!db.objectStoreNames.contains('notifications')) {
+          const notifStore = db.createObjectStore('notifications', { keyPath: 'id' });
+          notifStore.createIndex('userId', 'userId');
+          notifStore.createIndex('read', 'read');
+          console.log('✅ Created notifications store');
         }
 
-        // Create comments store
-        if (!db.objectStoreNames.contains('comments')) {
-          const commentStore = db.createObjectStore('comments', { keyPath: 'id', autoIncrement: true });
-          commentStore.createIndex('postId', 'postId');
-          commentStore.createIndex('authorId', 'authorId');
-          console.log('✅ Created comments store');
+        // Create password_hashes store
+        if (!db.objectStoreNames.contains('password_hashes')) {
+          db.createObjectStore('password_hashes', { keyPath: 'email' });
+          console.log('✅ Created password_hashes store');
         }
       };
 

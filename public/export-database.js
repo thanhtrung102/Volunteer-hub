@@ -26,7 +26,7 @@
       };
     });
 
-    const storeNames = ['users', 'events', 'registrations', 'posts', 'comments'];
+    const storeNames = ['users', 'events', 'registrations', 'notifications', 'password_hashes'];
     const backup = {
       exportDate: new Date().toISOString(),
       version: db.version,
@@ -57,8 +57,8 @@
       totalUsers: backup.stores.users.length,
       totalEvents: backup.stores.events.length,
       totalRegistrations: backup.stores.registrations.length,
-      totalPosts: backup.stores.posts.length,
-      totalComments: backup.stores.comments.length
+      totalNotifications: backup.stores.notifications.length,
+      totalPasswordHashes: backup.stores.password_hashes.length
     };
 
     backup.statistics = stats;

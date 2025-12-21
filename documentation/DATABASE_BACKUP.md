@@ -12,24 +12,24 @@ This document provides instructions for backing up and restoring the VolunteerHu
 
 ### Object Stores
 1. **users** - Stores user account information
-   - Key: `id` (auto-increment)
+   - Key: `id`
    - Indexes: `email` (unique)
 
 2. **events** - Stores volunteer events
-   - Key: `id` (auto-increment)
-   - Indexes: `status`, `createdBy`
+   - Key: `id`
+   - Indexes: `status`, `date`
 
 3. **registrations** - Stores event registrations
-   - Key: `id` (auto-increment)
-   - Indexes: `userId`, `eventId`, `status`
+   - Key: `id`
+   - Indexes: `userId`, `eventId`
 
-4. **posts** - Stores community posts
-   - Key: `id` (auto-increment)
-   - Indexes: `authorId`, `createdAt`
+4. **notifications** - Stores user notifications
+   - Key: `id`
+   - Indexes: `userId`, `read`
 
-5. **comments** - Stores post comments
-   - Key: `id` (auto-increment)
-   - Indexes: `postId`, `authorId`
+5. **password_hashes** - Stores hashed passwords
+   - Key: `email`
+   - Indexes: none
 
 ## Current Database Contents (2026 Data)
 
@@ -45,6 +45,38 @@ This document provides instructions for backing up and restoring the VolunteerHu
 ### Registrations
 - 90 registrations across 4 events
 - Mix of CONFIRMED and PENDING statuses
+
+## ⚠️ Important: Why Data Resets After Restarting the App
+
+**IndexedDB is persistent** - it stores data permanently in your browser until explicitly cleared. This means:
+
+### The Problem
+- When you edit `mockData.ts` and restart the app with `npm run dev`, your changes **won't appear**
+- The database keeps the old data from the previous session
+- The app only seeds data from `mockData.ts` **once**, when the database is first created
+
+### The Solution
+To see changes from `mockData.ts`, you MUST clear the database first:
+
+```javascript
+// Run this in browser console (F12) before refreshing
+localStorage.clear();
+indexedDB.deleteDatabase('VolunteerHubDB');
+location.reload();
+```
+
+### Why This Happens
+1. **First visit**: App creates database and seeds it with `mockData.ts`
+2. **Subsequent visits**: App uses existing database (ignores `mockData.ts`)
+3. **After edits**: Old database still exists, so changes aren't visible
+4. **After clearing**: Database is recreated with updated `mockData.ts`
+
+### Alternative: Use the Provided Script
+Instead of manually clearing, use the script in `public/export-database.js`:
+```javascript
+// Copy the entire contents of public/export-database.js into browser console
+// This will export your current data before clearing
+```
 
 ## Backup Methods
 
@@ -62,7 +94,7 @@ async function exportDatabase() {
     request.onerror = () => reject(request.error);
   });
 
-  const storeNames = ['users', 'events', 'registrations', 'posts', 'comments'];
+  const storeNames = ['users', 'events', 'registrations', 'notifications', 'password_hashes'];
   const backup = { version: db.version, stores: {} };
 
   for (const storeName of storeNames) {
@@ -130,33 +162,30 @@ async function importDatabase(backupData) {
 
       // Create object stores
       if (!db.objectStoreNames.contains('users')) {
-        const userStore = db.createObjectStore('users', { keyPath: 'id', autoIncrement: true });
+        const userStore = db.createObjectStore('users', { keyPath: 'id' });
         userStore.createIndex('email', 'email', { unique: true });
       }
 
       if (!db.objectStoreNames.contains('events')) {
-        const eventStore = db.createObjectStore('events', { keyPath: 'id', autoIncrement: true });
+        const eventStore = db.createObjectStore('events', { keyPath: 'id' });
         eventStore.createIndex('status', 'status');
-        eventStore.createIndex('createdBy', 'createdBy');
+        eventStore.createIndex('date', 'date');
       }
 
       if (!db.objectStoreNames.contains('registrations')) {
-        const regStore = db.createObjectStore('registrations', { keyPath: 'id', autoIncrement: true });
+        const regStore = db.createObjectStore('registrations', { keyPath: 'id' });
         regStore.createIndex('userId', 'userId');
         regStore.createIndex('eventId', 'eventId');
-        regStore.createIndex('status', 'status');
       }
 
-      if (!db.objectStoreNames.contains('posts')) {
-        const postStore = db.createObjectStore('posts', { keyPath: 'id', autoIncrement: true });
-        postStore.createIndex('authorId', 'authorId');
-        postStore.createIndex('createdAt', 'createdAt');
+      if (!db.objectStoreNames.contains('notifications')) {
+        const notifStore = db.createObjectStore('notifications', { keyPath: 'id' });
+        notifStore.createIndex('userId', 'userId');
+        notifStore.createIndex('read', 'read');
       }
 
-      if (!db.objectStoreNames.contains('comments')) {
-        const commentStore = db.createObjectStore('comments', { keyPath: 'id', autoIncrement: true });
-        commentStore.createIndex('postId', 'postId');
-        commentStore.createIndex('authorId', 'authorId');
+      if (!db.objectStoreNames.contains('password_hashes')) {
+        db.createObjectStore('password_hashes', { keyPath: 'email' });
       }
     };
 
@@ -200,7 +229,7 @@ async function verifyDatabase() {
   });
 
   const stats = {};
-  const storeNames = ['users', 'events', 'registrations', 'posts', 'comments'];
+  const storeNames = ['users', 'events', 'registrations', 'notifications', 'password_hashes'];
 
   for (const storeName of storeNames) {
     const tx = db.transaction(storeName, 'readonly');
@@ -224,15 +253,15 @@ verifyDatabase();
 
 Expected output:
 ```
-┌───────────────┬───────┐
-│   (index)     │ Values│
-├───────────────┼───────┤
-│ users         │ 103   │
-│ events        │ 11    │
-│ registrations │ 90    │
-│ posts         │ 0     │
-│ comments      │ 0     │
-└───────────────┴───────┘
+┌─────────────────┬────────┐
+│    (index)      │ Values │
+├─────────────────┼────────┤
+│ users           │ 103    │
+│ events          │ 11     │
+│ registrations   │ 90     │
+│ notifications   │ 0      │
+│ password_hashes │ 103    │
+└─────────────────┴────────┘
 ```
 
 ## Submission Package

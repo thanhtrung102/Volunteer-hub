@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(GIT_DIR=\"F:/Volunteer-hub/.git\" GIT_WORK_TREE=\"C:/Users/admin/.claude-worktrees/Volunteer-hub/agitated-goldberg\" git status:*)",
+      "Bash(GIT_DIR=\"F:/Volunteer-hub/.git\" GIT_WORK_TREE=\"C:/Users/admin/.claude-worktrees/Volunteer-hub/agitated-goldberg\" git commit:*)"
     ]
   }
 }
