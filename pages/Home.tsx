@@ -63,7 +63,7 @@ const Home: React.FC = () => {
                  <img className="w-8 h-8 rounded-full border-2 border-primary" src="https://ui-avatars.com/api/?background=random&name=B" alt=""/>
                  <img className="w-8 h-8 rounded-full border-2 border-primary" src="https://ui-avatars.com/api/?background=random&name=C" alt=""/>
                </div>
-               <p>Join <span className="text-white font-semibold">1,200+</span> others today</p>
+               <p>Join <span className="text-white font-semibold">100+</span> others today</p>
             </div>
           </div>
         </div>

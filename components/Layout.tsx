@@ -29,8 +29,10 @@ const Layout: React.FC = () => {
             {/* Logo Area */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center gap-2 group" onClick={closeMobileMenu}>
-                <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-md group-hover:bg-secondary-light transition-colors">
-                  V
+                <div className="w-9 h-9 bg-secondary rounded-lg flex items-center justify-center shadow-md group-hover:bg-secondary-light transition-colors">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
                 </div>
                 <span className="font-bold text-xl tracking-tight group-hover:text-secondary-light transition-colors">VolunteerHub</span>
               </Link>
@@ -253,7 +255,11 @@ const Layout: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <div className="mb-6 md:mb-0 text-center md:text-left">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <div className="w-6 h-6 bg-secondary rounded flex items-center justify-center font-bold text-white text-xs">V</div>
+                        <div className="w-6 h-6 bg-secondary rounded flex items-center justify-center">
+                            <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </div>
                         <span className="font-bold text-white text-lg">VolunteerHub</span>
                     </div>
                     <p className="text-sm text-gray-500">Connecting passion with purpose.</p>
