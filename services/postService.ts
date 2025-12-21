@@ -1,7 +1,33 @@
+/**
+ * Post and Comment Management Service
+ *
+ * Manages social features for event discussion channels.
+ * Implements the business requirement: "Approved events automatically generate
+ * dedicated discussion channels enabling member interaction comparable to Facebook walls"
+ *
+ * Features:
+ * - Post creation, deletion, and listing
+ * - Comment management with cascade deletion
+ * - Like/unlike functionality
+ * - Real-time interaction tracking
+ *
+ * Note: Uses in-memory storage for demo purposes. Posts and comments are
+ * initialized from mock data and maintained in memory for fast access.
+ * In production, this would be migrated to the database layer similar
+ * to other entities.
+ *
+ * @module services/postService
+ */
+
 import { Post, Comment } from '../types';
 import { userService } from './userService';
 import { MOCK_POSTS, MOCK_COMMENTS } from '../mockData';
 
+/**
+ * PostService - Singleton service for post and comment operations
+ *
+ * Provides social interaction features for event discussion channels.
+ */
 class PostService {
   private static instance: PostService;
   private posts = MOCK_POSTS;
@@ -23,6 +49,14 @@ class PostService {
       return this.posts
         .filter(p => p.eventId === eventId)
         .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  public async getAllRecentPosts(limit: number = 5): Promise<Post[]> {
+      await this.delay();
+      return this.posts
+        .slice()
+        .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, limit);
   }
 
   public async createPost(eventId: number, userId: number, content: string): Promise<Post> {

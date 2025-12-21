@@ -30,6 +30,25 @@ const Dashboard: React.FC = () => {
     if (user) loadData();
   }, [user]);
 
+  // Real-time updates for trending events
+  useEffect(() => {
+    if (!user) return;
+
+    // Refresh highlights every 10 seconds to show real-time updates
+    const interval = setInterval(async () => {
+      console.log('[Dashboard] Real-time polling: Refreshing highlights...');
+      try {
+        const highlightsData = await eventService.getDashboardHighlights();
+        setHighlights(highlightsData);
+        console.log('[Dashboard] Highlights refreshed successfully');
+      } catch (error) {
+        console.error('Failed to refresh dashboard highlights', error);
+      }
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [user]);
+
   const loadData = async () => {
     setIsLoading(true);
     try {

@@ -147,13 +147,25 @@ const EventDetails: React.FC = () => {
             {isAuthenticated && isVolunteer ? (
                 registration ? (
                     <div className="space-y-3">
+                        <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3 rounded-r">
+                            <div className="flex items-start gap-2">
+                                <svg className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                </svg>
+                                <div>
+                                    <p className="text-sm text-blue-700 font-medium">You're registered!</p>
+                                    <p className="text-xs text-blue-600 mt-0.5">The event manager will review your registration.</p>
+                                </div>
+                            </div>
+                        </div>
                         <div className="w-full py-3 px-4 rounded bg-green-50 text-green-700 text-center font-bold border border-green-200">
-                            Registration Status: {registration.status.toUpperCase()}
+                            Status: {registration.status.toUpperCase()}
                         </div>
                          {registration.status !== 'completed' && (
-                             <button 
+                             <button
                                 onClick={handleCancelRegistration}
                                 disabled={isProcessing}
+                                title="Cancel your registration for this event"
                                 className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded border border-gray-300 shadow-sm transition-colors text-sm"
                              >
                                 {isProcessing ? 'Processing...' : 'Cancel Registration'}
@@ -161,26 +173,53 @@ const EventDetails: React.FC = () => {
                          )}
                     </div>
                 ) : (
-                    <button 
-                        onClick={handleRegister}
-                        disabled={isProcessing}
-                        className="w-full bg-primary hover:bg-primary-light text-white font-bold py-3 px-4 rounded shadow-md transition-colors flex justify-center items-center"
-                    >
-                        {isProcessing ? 'Processing...' : 'Register Now'}
-                    </button>
+                    <div className="space-y-3">
+                        <div className="bg-green-50 border-l-4 border-green-400 p-3 rounded-r">
+                            <div className="flex items-start gap-2">
+                                <svg className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                <div>
+                                    <p className="text-sm text-green-700 font-medium">Spots available!</p>
+                                    <p className="text-xs text-green-600 mt-0.5">Join {event.participantCount} volunteers already signed up.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleRegister}
+                            disabled={isProcessing}
+                            title="Register for this volunteer event"
+                            className="w-full bg-primary hover:bg-primary-light text-white font-bold py-3 px-4 rounded shadow-md transition-all hover:shadow-lg flex justify-center items-center"
+                        >
+                            {isProcessing ? 'Processing...' : 'Register Now'}
+                        </button>
+                    </div>
                 )
             ) : isAuthenticated ? (
                  <div className="w-full py-3 px-4 rounded bg-gray-100 text-gray-500 text-center text-sm">
                     {user?.role === UserRole.MANAGER || user?.role === UserRole.ADMIN ? 'Manage via Dashboard' : 'Please log in as a volunteer'}
                  </div>
             ) : (
-                 <Link to="/login" className="block w-full bg-secondary hover:bg-secondary-light text-white font-bold py-3 px-4 rounded shadow-md transition-colors text-center">
-                    Log in to Register
-                 </Link>
+                <div className="space-y-3">
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r">
+                        <div className="flex items-start gap-2">
+                            <svg className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <div>
+                                <p className="text-sm text-yellow-700 font-medium">Login required</p>
+                                <p className="text-xs text-yellow-600 mt-0.5">Create an account or sign in to register for this event.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <Link to="/login" className="block w-full bg-secondary hover:bg-secondary-light text-white font-bold py-3 px-4 rounded shadow-md transition-all hover:shadow-lg text-center">
+                        Log in to Register
+                    </Link>
+                </div>
             )}
 
             <p className="text-center text-xs text-gray-500 mt-3">
-              12 spots remaining
+              {Math.max(0, 50 - (event.participantCount || 0))} spots remaining
             </p>
           </div>
         </div>

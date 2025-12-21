@@ -3,6 +3,7 @@ import { eventService } from '../services/eventService';
 import { userService } from '../services/userService';
 import { registrationService } from '../services/registrationService';
 import { authService } from '../services/auth';
+import { notificationService } from '../services/notificationService';
 import { UserRole, EventStatus, RegistrationStatus } from '../types';
 
 const SystemTests: React.FC = () => {
@@ -15,7 +16,12 @@ const SystemTests: React.FC = () => {
     { name: 'Registration Service: Duplicate Check', status: 'pending' },
     { name: 'Registration Service: Confirm', status: 'pending' },
     { name: 'User Service: Permission Check', status: 'pending' },
+    { name: 'Web Push API: Service Worker Registration', status: 'pending' },
+    { name: 'Web Push API: Push Subscription', status: 'pending' },
+    { name: 'Web Push API: Send Notification', status: 'pending' },
   ]);
+
+  const [pushSubscriptionInfo, setPushSubscriptionInfo] = useState<string>('');
 
   const [isRunning, setIsRunning] = useState(false);
 
@@ -129,6 +135,76 @@ const SystemTests: React.FC = () => {
         updateResult(7, 'failed', e.message);
     }
 
+    // --- Test 9: Web Push API - Service Worker ---
+    updateResult(8, 'running');
+    try {
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for SW to register
+        const swStatus = await notificationService.getSubscriptionStatus();
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                updateResult(8, 'passed', `Service Worker active at ${registration.scope}`);
+            } else {
+                updateResult(8, 'failed', 'Service Worker not registered');
+            }
+        } else {
+            updateResult(8, 'failed', 'Service Worker not supported');
+        }
+    } catch (e: any) {
+        updateResult(8, 'failed', e.message);
+    }
+
+    // --- Test 10: Web Push API - Push Subscription ---
+    updateResult(9, 'running');
+    try {
+        if (!notificationService.isPushSupported()) {
+            updateResult(9, 'failed', 'Push API not supported in this browser');
+        } else {
+            const subscribed = await notificationService.subscribeToPushNotifications();
+            if (subscribed) {
+                const status = await notificationService.getSubscriptionStatus();
+                if (status.subscription) {
+                    const subInfo = status.subscription.toJSON();
+                    setPushSubscriptionInfo(JSON.stringify(subInfo, null, 2));
+                    updateResult(9, 'passed', 'Push subscription created successfully');
+                } else {
+                    updateResult(9, 'failed', 'Subscription created but not retrieved');
+                }
+            } else {
+                updateResult(9, 'failed', 'Failed to create push subscription');
+            }
+        }
+    } catch (e: any) {
+        updateResult(9, 'failed', e.message);
+    }
+
+    // --- Test 11: Web Push API - Send Notification ---
+    updateResult(10, 'running');
+    try {
+        if (notificationService.getPermission() === 'granted') {
+            await notificationService.notify(
+                'VolunteerHub Test',
+                'This is a test notification from the Web Push API!',
+                'https://cdn-icons-png.flaticon.com/128/18891/18891286.png'
+            );
+            updateResult(10, 'passed', 'Notification sent via Service Worker');
+        } else {
+            const permission = await notificationService.requestPermission();
+            if (permission === 'granted') {
+                await notificationService.notify(
+                    'VolunteerHub Test',
+                    'This is a test notification from the Web Push API!',
+                    'https://cdn-icons-png.flaticon.com/128/18891/18891286.png'
+                );
+                updateResult(10, 'passed', 'Notification permission granted and sent');
+            } else {
+                updateResult(10, 'failed', 'Notification permission denied');
+            }
+        }
+    } catch (e: any) {
+        updateResult(10, 'failed', e.message);
+    }
+
     setIsRunning(false);
   };
 
@@ -137,12 +213,12 @@ const SystemTests: React.FC = () => {
         <h1 className="text-3xl font-bold text-primary mb-6">Comprehensive System Verification</h1>
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <p className="text-gray-600 mb-6">
-                This dashboard executes a suite of integration tests to verify the core functionalities 
-                required for VolunteerHub (Auth, Events, Registrations, Logic).
+                This dashboard executes a suite of integration tests to verify the core functionalities
+                required for VolunteerHub (Auth, Events, Registrations, Logic, Web Push API).
             </p>
-            
-            <button 
-                onClick={runTests} 
+
+            <button
+                onClick={runTests}
                 disabled={isRunning}
                 className={`px-6 py-3 rounded-md font-bold text-white transition-colors ${isRunning ? 'bg-gray-400 cursor-not-allowed' : 'bg-secondary hover:bg-secondary-light'}`}
             >
@@ -169,6 +245,19 @@ const SystemTests: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Push Subscription Details */}
+            {pushSubscriptionInfo && (
+                <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 className="text-sm font-bold text-blue-900 mb-2">Web Push Subscription Details:</h3>
+                    <pre className="text-xs bg-white p-3 rounded border border-blue-100 overflow-x-auto">
+                        {pushSubscriptionInfo}
+                    </pre>
+                    <p className="text-xs text-blue-700 mt-2 italic">
+                        In production, this subscription object would be sent to your backend server to enable server-initiated push notifications.
+                    </p>
+                </div>
+            )}
         </div>
     </div>
   );

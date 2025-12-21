@@ -40,6 +40,26 @@ export const useEventDetails = (eventId: string | undefined, user: User | null):
     fetchData();
   }, [eventId, user]);
 
+  // Real-time updates every 10 seconds to reflect participant count changes
+  useEffect(() => {
+    if (!eventId) return;
+
+    const interval = setInterval(async () => {
+      console.log(`[useEventDetails] Real-time polling: Refreshing event ${eventId}...`);
+      try {
+        const eventData = await eventService.getEventById(Number(eventId));
+        if (eventData) {
+          setEvent(eventData);
+          console.log(`[useEventDetails] Event ${eventId} refreshed, participant count: ${eventData.participantCount}`);
+        }
+      } catch (error) {
+        console.error('Failed to refresh event data', error);
+      }
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [eventId]);
+
   const refreshRegistration = async () => {
       if (user && eventId) {
           const regData = await registrationService.getRegistrationForUserAndEvent(user.id, Number(eventId));

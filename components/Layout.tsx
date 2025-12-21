@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
+import SecurityBadge from './SecurityBadge';
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -82,18 +83,18 @@ const Layout: React.FC = () => {
               <div className="ml-4 flex items-center md:ml-6 space-x-4">
                 {isAuthenticated && user ? (
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-3">
+                    <Link to="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                       <div className="text-right hidden lg:block">
                         <p className="text-sm font-medium text-white leading-none">{user.fullName}</p>
                         <p className="text-xs text-gray-400 mt-1 capitalize">{user.role}</p>
                       </div>
-                      <img 
+                      <img
                         className="h-9 w-9 rounded-full border-2 border-secondary shadow-sm"
-                        src={user.avatarUrl} 
-                        alt={user.fullName} 
+                        src={user.avatarUrl}
+                        alt={user.fullName}
                       />
-                    </div>
-                    <button 
+                    </Link>
+                    <button
                       onClick={handleLogout}
                       className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium border border-gray-600 hover:border-gray-400 hover:bg-gray-800 transition-all"
                     >
@@ -192,22 +193,27 @@ const Layout: React.FC = () => {
             {/* Mobile Auth Buttons / Profile */}
             <div className="pt-4 pb-4 border-t border-gray-700">
               {isAuthenticated && user ? (
-                <div className="flex items-center px-5">
-                  <div className="flex-shrink-0">
-                    <img className="h-10 w-10 rounded-full border-2 border-secondary" src={user.avatarUrl} alt="" />
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-base font-medium leading-none text-white">{user.fullName}</div>
-                    <div className="text-sm font-medium leading-none text-gray-400 mt-1">{user.email}</div>
-                  </div>
-                  <button 
-                    onClick={handleLogout}
-                    className="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                  >
-                    <span className="sr-only">Log out</span>
-                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <div>
+                  <Link to="/profile" onClick={closeMobileMenu} className="flex items-center px-5 py-3 hover:bg-gray-700 transition-colors">
+                    <div className="flex-shrink-0">
+                      <img className="h-10 w-10 rounded-full border-2 border-secondary" src={user.avatarUrl} alt="" />
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-base font-medium leading-none text-white">{user.fullName}</div>
+                      <div className="text-sm font-medium leading-none text-gray-400 mt-1">{user.email}</div>
+                    </div>
+                    <svg className="ml-auto h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-5 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors flex items-center"
+                  >
+                    <svg className="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Log Out
                   </button>
                 </div>
               ) : (
@@ -237,6 +243,9 @@ const Layout: React.FC = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+
+      {/* Security Badge */}
+      <SecurityBadge />
 
       {/* Footer */}
       <footer className="bg-primary text-gray-400 py-10 border-t border-gray-800">
