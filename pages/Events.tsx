@@ -29,6 +29,17 @@ const Events: React.FC = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, selectedCategory, selectedDate]);
 
+  // Real-time updates every 15 seconds to reflect registration changes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('[Events] Real-time polling: Refreshing events...');
+      // Refresh current events without resetting page or filters
+      fetchEvents(1, searchTerm, selectedCategory, selectedDate);
+    }, 15000); // 15 seconds
+
+    return () => clearInterval(interval);
+  }, [searchTerm, selectedCategory, selectedDate]);
+
   const fetchEvents = async (pageNum: number, search: string, category: string, date: string) => {
     if (pageNum === 1) setIsLoading(true);
     else setIsLoadingMore(true);
@@ -58,60 +69,89 @@ const Events: React.FC = () => {
         <h1 className="text-3xl font-bold text-primary mb-2">Explore Events</h1>
         <p className="text-gray-600 mb-6">Discover opportunities to give back in your community.</p>
 
+        {/* Help Banner */}
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-blue-700">
+                <span className="font-medium">Tip:</span> Use the filters below to find events that match your interests. Search by keywords, filter by category, or select a specific date.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Filters Container */}
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 items-center">
             {/* Search Bar */}
-            <div className="relative flex-grow w-full md:w-auto">
+            <div className="relative flex-grow w-full md:w-auto group">
                 <input
                 type="text"
-                placeholder="Search events..."
+                placeholder="Search by title or location..."
+                title="Search events by title or location (e.g., 'Beach' or 'New York')"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-secondary focus:border-secondary outline-none transition-shadow"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <svg 
-                className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" 
-                fill="none" 
-                stroke="currentColor" 
+                <svg
+                className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
                 >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
+                <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10">
+                  Search by event title or location
+                </div>
             </div>
 
             {/* Category Filter */}
-            <div className="w-full md:w-48">
+            <div className="w-full md:w-48 group relative">
                 <select
                     className="w-full py-2 pl-3 pr-8 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm"
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
+                    title="Filter events by category type"
                 >
                     <option value="">All Categories</option>
                     {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
                     ))}
                 </select>
+                <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10">
+                  Filter by event category
+                </div>
             </div>
 
             {/* Date Filter */}
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto group relative">
                  <input
                     type="date"
+                    title="Filter events starting from this date"
                     className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm text-gray-500"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                 />
+                <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10">
+                  Show events from this date onward
+                </div>
             </div>
-            
+
             {/* Clear Filters */}
             {(searchTerm || selectedCategory || selectedDate) && (
-                <button 
+                <button
                     onClick={() => {
                         setSearchTerm('');
                         setSelectedCategory('');
                         setSelectedDate('');
                     }}
-                    className="text-sm text-red-500 hover:text-red-700 whitespace-nowrap"
+                    title="Clear all active filters"
+                    className="text-sm text-red-500 hover:text-red-700 whitespace-nowrap font-medium"
                 >
                     Clear Filters
                 </button>

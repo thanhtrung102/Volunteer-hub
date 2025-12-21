@@ -11,6 +11,7 @@ const Home = lazy(() => import('./pages/Home'));
 const Events = lazy(() => import('./pages/Events'));
 const EventDetails = lazy(() => import('./pages/EventDetails'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const SystemTests = lazy(() => import('./pages/SystemTests'));
 const Login = lazy(() => import('./pages/Login'));
@@ -35,13 +36,21 @@ const App: React.FC = () => {
               <Route path="register" element={<Register />} />
               
               {/* Protected Routes */}
-              <Route 
-                path="dashboard" 
+              <Route
+                path="dashboard"
                 element={
                   <ProtectedRoute>
                     <Dashboard />
                   </ProtectedRoute>
-                } 
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
               />
 
               {/* Admin Routes */}

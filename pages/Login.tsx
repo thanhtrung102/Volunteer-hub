@@ -159,13 +159,33 @@ const Login: React.FC = () => {
             
              {/* Mock Credentials Hint */}
             <div className="mt-8 bg-blue-50 border border-blue-100 rounded-lg p-4 text-xs text-blue-800">
-                <p className="font-bold mb-2 uppercase tracking-wide text-blue-900">Demo Accounts</p>
-                <div className="grid grid-cols-1 gap-1 font-mono">
-                    <div>volunteer@volunteerhub.com</div>
-                    <div>manager@volunteerhub.com</div>
-                    <div>admin@volunteerhub.com</div>
+                <div className="flex items-start gap-2 mb-3">
+                    <svg className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                        <p className="font-bold uppercase tracking-wide text-blue-900">Demo Accounts Available</p>
+                        <p className="text-xs text-blue-600 mt-1">Use these test accounts to explore different user roles and features</p>
+                    </div>
                 </div>
-                <p className="mt-2 text-blue-600 opacity-75">Password: Any</p>
+                <div className="grid grid-cols-1 gap-2 font-mono text-xs">
+                    <div className="flex items-center gap-2 bg-white p-2 rounded border border-blue-200">
+                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full" title="Volunteer role"></span>
+                        <span>volunteer@volunteerhub.com</span>
+                        <span className="ml-auto text-gray-500 text-xs">Volunteer</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white p-2 rounded border border-blue-200">
+                        <span className="inline-block w-2 h-2 bg-orange-400 rounded-full" title="Manager role"></span>
+                        <span>manager@volunteerhub.com</span>
+                        <span className="ml-auto text-gray-500 text-xs">Manager</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white p-2 rounded border border-blue-200">
+                        <span className="inline-block w-2 h-2 bg-purple-400 rounded-full" title="Admin role"></span>
+                        <span>admin@volunteerhub.com</span>
+                        <span className="ml-auto text-gray-500 text-xs">Admin</span>
+                    </div>
+                </div>
+                <p className="mt-3 text-blue-700 font-medium text-center">Password: <span className="bg-blue-100 px-2 py-0.5 rounded">any password works</span></p>
             </div>
           </div>
         </div>
