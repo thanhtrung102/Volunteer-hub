@@ -93,9 +93,9 @@ All demo accounts use the password: `demo123`
 ## 📚 Documentation
 
 - [Architecture Guide](./documentation/ARCHITECTURE.md) - System design patterns
-- [Grading Checklist](./GRADING_CHECKLIST.md) - Implementation compliance
-- [Security Implementation](./SECURITY_IMPLEMENTATION.md) - Security features
-- [Demo Presentation Plan](./DEMO_PRESENTATION_PLAN.md) - Presentation guide
+- [Grading Checklist](./documentation/GRADING_CHECKLIST.md) - Implementation compliance
+- [Security Implementation](./documentation/SECURITY_IMPLEMENTATION.md) - Security features
+- [Demo Presentation Plan](./documentation/DEMO_PRESENTATION_PLAN.md) - Presentation guide
 
 ## 🔒 Security Features
 
